@@ -25,19 +25,22 @@ def get_notebook_data(
             f"{databricks_url}{api_url}", headers=headers, json=data
         )
 
-        objects = response.json().get("objects")
+        if response.status_code == 200:
+            objects = response.json().get("objects")
 
-        if objects:
-            for object in objects:
-                if object["object_type"] == "NOTEBOOK":
-                    api_data["object_type"].append(object["object_type"])
-                    api_data["path"].append(object["path"])
-                    api_data["object_id"].append(object["object_id"])
-                    api_data["language"].append(object["language"])
-                else:
-                    get_api_data(workspace=object["path"])
+            if objects:
+                for object in objects:
+                    if object["object_type"] == "NOTEBOOK":
+                        api_data["object_type"].append(object["object_type"])
+                        api_data["path"].append(object["path"])
+                        api_data["object_id"].append(object["object_id"])
+                        api_data["language"].append(object["language"])
+                    else:
+                        get_api_data(workspace=object["path"])
+            else:
+                pass
         else:
-            pass
+            raise AttributeError(f"Cannot get workspace:\n{response.text}")
 
     get_api_data(workspace)
 
