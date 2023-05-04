@@ -4,7 +4,8 @@ from retry import retry
 import time
 import os
 import traceback
-from scrape import get_notebook_data, export_all_notebooks
+import asyncio
+from scrape import export_all_notebooks
 
 
 app = Flask(__name__)
@@ -59,11 +60,10 @@ def get_workspace():
     start_time = time.time()
     try:
         workspace = request.args.get("workspace")
-        if workspace == "":
+        if not workspace or workspace == "":
             workspace = "/Users"
-
-        notebook_data = get_notebook_data(workspace=workspace)
-        notebooks_content = export_all_notebooks(notebook_data)
+    
+        notebooks_content = asyncio.run(export_all_notebooks(workspace))
 
         # Inialize elasticsearch with data
         actions = [
@@ -95,7 +95,7 @@ def find_code_blocks(code_blocks=None):
         es = get_elasticsearch()
         results = es.search(
             index="nodes_bulk",
-            body={"query": {"match": {"notebook_content": search}}},
+            query={"match": {"notebook_content": search}},
             size=50,
         )
         code_blocks = results.raw["hits"]["hits"]

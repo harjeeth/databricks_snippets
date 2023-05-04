@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "databricks_snippets"
+version = "0.0.1"
+description = "An Elasticsearch site to help you find snippets of code in your Databricks notebooks."
+authors = [
+    "Mike Gardner <mike.gardner@kytheralabs.com>",
+    "Harjeet Harpal <harjeet.harpal@gmail.com>",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.app.dependencies]
+elasticsearch = "*"
+requests = "*"
+flask = "*"
+python-dotenv = "*"
+retry = "*"
+aiohttp = "*"
+aiofiles = "*"
+
+[tool.poetry.group.dev-test.dependencies]
+black = "^22.10.0"
+pylint = "^2.15.4"
