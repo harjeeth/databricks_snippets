@@ -2,7 +2,7 @@ import aiofiles
 import aiohttp
 import asyncio
 from collections import defaultdict
-from typing import List
+from typing import List, Optional
 import base64
 import time
 from dotenv import dotenv_values
@@ -14,8 +14,8 @@ config = dotenv_values(".env")
 async def make_databricks_api_call(session: aiohttp.ClientSession,
                                    path: str,
                                    api_url: str,
-                                   databricks_url: str = config["DATABRICKS_URL"],
-                                   token: str = config["DATABRICKS_TOKEN"]):
+                                   databricks_url: Optional[str] = config["DATABRICKS_URL"],
+                                   token: Optional[str] = config["DATABRICKS_TOKEN"]):
     headers = {"Authorization": f"Bearer {token}"}
     async with session.get(f"{databricks_url}{api_url}", headers=headers, json={"path": path}) as resp:
         if resp.status == 200:
@@ -76,7 +76,7 @@ async def load_notebook_ids_to_export(session: aiohttp.ClientSession,
 
 
 def get_notebook_url_from_id(notebook_id: str,
-                             databricks_url: str = config["DATABRICKS_URL"]) -> str:
+                             databricks_url: Optional[str] = config["DATABRICKS_URL"]) -> str:
     return f"{databricks_url}/#notebook/{notebook_id}"
 
 
