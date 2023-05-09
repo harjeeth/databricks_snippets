@@ -21,5 +21,6 @@ clean-data:
 	docker volume rm -f "$(PROJECT)_data"
 
 update-requirements:
+	pipenv update
 	echo "$$REQUIREMENTS_HEADER" > requirements.txt
 	pipenv requirements >> requirements.txt
